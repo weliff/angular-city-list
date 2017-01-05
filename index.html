@@ -35,26 +35,37 @@
 	</style>
 	<script>
 		angular.module('listaTelefonica', ['ngMessages']);
-		angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '$filter', function(scope, filter, uppercaseFilter){
+		angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '$filter', 'uppercaseFilter', '$http', function(scope, filter, uppercaseFilter, http){
 			scope.app = 'Lista Telefonica';
 			scope.contatos = [
-				{nome: filter('uppercase')("Pedro"), data: new Date(), telefone: 99998888, cor: 'blue'},
-				{nome: "Ana", data: new Date(), telefone: 99998877, cor: 'yellow'},
-				{nome: "Maria", data: new Date(), telefone: 99998866, cor: 'red'}
+				// {nome: filter('uppercase')("Pedro"), data: new Date(), telefone: 99998888, cor: 'blue'},
+				// {nome: uppercaseFilter("Ana"), data: new Date(), telefone: 99998877, cor: 'yellow'},
+				// {nome: "Maria", data: new Date(), telefone: 99998866, cor: 'red'}
 			];
 
-			scope.operadoras = [
-				{nome:"Vivo", codigo:14, categoria:"Celular", preco: 2},
-				{nome:"Oi", codigo:15, categoria:"Celular", preco: 1},
-				{nome:"Tim", codigo:41, categoria:"Celular", preco: 3},
-				{nome:"GVT", codigo:25, categoria:"Fixo", preco: 1},
-				{nome:"Tim", codigo:21, categoria:"Fixo", preco:2}
-			];
+			scope.operadoras = [];
+
+			var carregarContatos = function () {
+				scope.contatos = http.get('http://localhost:3412/contatos').success(function(data, status) {
+					scope.contatos = data;
+				});
+			}
+
+			var carregarOperadoras = function() {
+				http.get('http://localhost:3412/operadoras').success(function (data, status) {
+					scope.operadoras = data;
+				}).error(function (data, status) {
+					scope.message = 'Ocorreu um erro: ' + data;
+				});
+			}
 
 			scope.adicionarContato = function (contato) {
-				scope.contatos.push(contato);
-				delete scope.contato;
-				scope.contatoForm.$setPristine();
+				contato.data = new Date();
+				http.post('http://localhost:3412/contatos', contato).success(function(data) {
+					carregarContatos();
+					delete scope.contato;
+					scope.contatoForm.$setPristine();
+				});
 			};
 
 			scope.removerContato = function(contatos){
@@ -74,6 +85,9 @@
 				scope.direcaoOrdenacao = !scope.direcaoOrdenacao;
 			}
 
+			carregarContatos();
+			carregarOperadoras();
+
 		}]);
 
 	</script>
@@ -81,6 +95,7 @@
 <body ng-controller="listaTelefonicaCtrl">
 	<div class="jumbotron">
 		<h3>{{app}}</h3>
+		<h4>{{message}}</h4>
 		<input class="form-control" type="text" ng-model="criterioBusca">
 		<table ng-show="contatos.length > 0" class="table table-bordered">
 			<tr>
@@ -91,7 +106,7 @@
 				<th>Data</th>
 				<th></th>
 			</tr>
-			<tr ng-class="{'selecionado negrito': contato.done}" ng-repeat="contato in contatos | limitTo:2 | filter:{nome:criterioBusca} | 
+			<tr ng-class="{'selecionado negrito': contato.done}" ng-repeat="contato in contatos | filter:{nome:criterioBusca} | 
 				orderBy:criterioOrdenacao:direcaoOrdenacao">
 				<td><input type="checkbox" ng-model="contato.done"/></td>
 				<td>
@@ -101,7 +116,7 @@
 					{{contato.telefone | limitTo:4}}
 				</td>
 				<td>
-					{{contato.operadora | lowercase}}
+					{{contato.operadora.nome | lowercase}}
 				</td>
 				<td>
 					{{contato.data | date: 'MMMM EEEE dd/MM/yyyy HH:mm'}}
@@ -115,7 +130,7 @@
 		<form name="contatoForm">
 			<input class="form-control" placeHolder="Nome" ng-model="contato.nome" name="nome" ng-required="true" ng-minlength="10"/>
 			<input class="form-control" placeHolder="Telefone" ng-model="contato.telefone" name="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/"/>
-			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome as operadora.nome + ' (' + ( operadora.preco | currency) + ')' group by operadora.categoria for operadora in operadoras | orderBy:'categoria'">
+			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome + ' (' + ( operadora.preco | currency) + ')' group by operadora.categoria for operadora in operadoras | orderBy:'categoria'">
 				<option value="" selected="false">Selecione uma operadora</option>
 			</select>
 		</form>
