@@ -1,4 +1,6 @@
-angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '$filter', 'uppercaseFilter', '$http', function(scope, filter, uppercaseFilter, http){
+angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '$filter', 'uppercaseFilter',
+		'contatosAPI', 'operadorasAPI',
+		function(scope, filter, uppercaseFilter, contatosAPI, operadorasAPI) {
 	scope.app = 'Lista Telefonica';
 	scope.contatos = [
 		// {nome: filter('uppercase')("Pedro"), data: new Date(), telefone: 99998888, cor: 'blue'},
@@ -9,13 +11,13 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 	scope.operadoras = [];
 
 	var carregarContatos = function () {
-		scope.contatos = http.get('http://localhost:3412/contatos').success(function(data, status) {
+		contatosAPI.getContatos().success(function(data, status) {
 			scope.contatos = data;
 		});
 	}
 
 	var carregarOperadoras = function() {
-		http.get('http://localhost:3412/operadoras').success(function (data, status) {
+		operadorasAPI.getOperadoras().success(function (data, status) {
 			scope.operadoras = data;
 		}).error(function (data, status) {
 			scope.message = 'Ocorreu um erro: ' + data;
@@ -24,7 +26,7 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 
 	scope.adicionarContato = function (contato) {
 		contato.data = new Date();
-		http.post('http://localhost:3412/contatos', contato).success(function(data) {
+		contatosAPI.save(contato).success(function(data) {
 			carregarContatos();
 			delete scope.contato;
 			scope.contatoForm.$setPristine();

@@ -14,6 +14,13 @@
 
 	<script src="js/app.js"></script>
 	<script src="js/controllers/listaTelefonicaCtrl.js"></script>
+	<script src="js/services/contatosAPIService.js"></script>
+	<script src="js/services/operadorasAPIService.js"></script>
+	<script src="js/services/serialGeneratorService.js"></script>
+	<script src="js/values/configValue.js"></script>
+	<script src="js/config/serialGeneratorConfig.js"></script>
+	<script src="js/filters/nameFilter.js"></script>
+	<script src="js/filters/ellipsisFilter.js"></script>
 	
 	<script>
 		
@@ -38,7 +45,7 @@
 				orderBy:criterioOrdenacao:direcaoOrdenacao">
 				<td><input type="checkbox" ng-model="contato.done"/></td>
 				<td>
-					{{contato.nome}}
+					{{contato.nome | name | ellipsis}}
 				</td>
 				<td>
 					{{contato.telefone | limitTo:4}}
