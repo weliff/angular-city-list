@@ -1,6 +1,6 @@
 angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '$filter', 'uppercaseFilter',
-		'contatosAPI', 'operadorasAPI',
-		function(scope, filter, uppercaseFilter, contatosAPI, operadorasAPI) {
+		'contatosAPI', 'operadorasAPI', 'serialGenerator',
+		function(scope, filter, uppercaseFilter, contatosAPI, operadorasAPI, serialGenerator) {
 	scope.app = 'Lista Telefonica';
 	scope.contatos = [
 		// {nome: filter('uppercase')("Pedro"), data: new Date(), telefone: 99998888, cor: 'blue'},
@@ -12,6 +12,9 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 
 	var carregarContatos = function () {
 		contatosAPI.getContatos().success(function(data, status) {
+			data.forEach(function(contato) {
+				contato.serial = serialGenerator.generate();
+			});
 			scope.contatos = data;
 		});
 	}
@@ -20,7 +23,7 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 		operadorasAPI.getOperadoras().success(function (data, status) {
 			scope.operadoras = data;
 		}).error(function (data, status) {
-			scope.message = 'Ocorreu um erro: ' + data;
+			scope.error = 'Não foi possivel carregar os dados';
 		});
 	}
 
