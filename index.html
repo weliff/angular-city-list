@@ -25,6 +25,7 @@
 	<script src="js/directives/uiAlertDirective.js"></script>
 	<script src="js/directives/uiDateDirective.js"></script>
 	<script src="js/directives/uiTelefoneDirective.js"></script>
+	<script src="js/directives/uiAccordionDirective.js"></script>
 
 	<script>
 		
@@ -34,6 +35,15 @@
 <body ng-controller="listaTelefonicaCtrl">
 	<div class="jumbotron">
 		<h3>{{app}}</h3>
+		
+		<ui-accordions>
+			<ui-accordion title="Accordion 1">
+				Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. 
+			</ui-accordion>
+			<ui-accordion title="Accordion 2">
+				Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. 
+			</ui-accordion>
+		</ui-accordions>
 
 		<ui-alert title="Ops, aconteceu algo errado..." ng-show="error">
 			{{error}}
