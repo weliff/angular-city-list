@@ -10,6 +10,7 @@
 	<link rel="stylesheet" type="text/css" href="css/ui.css">
 
 	<script src="lib/angular/angular.min.js"></script>
+	<script src="lib/angular/angular-route.js"></script>
 	<script src="lib/angular/angular-messages.min.js"></script>
 	<script src="lib/angular/angular-locale_pt-br.js"></script>
 	<script src="lib/serialGenerator/serialGenerator.js"></script>
@@ -17,93 +18,30 @@
 
 	<script src="js/app.js"></script>
 	<script src="js/controllers/listaTelefonicaCtrl.js"></script>
+	<script src="js/controllers/novoContatoCtrl.js"></script>
+	<script src="js/controllers/detalhesContatoCtrl.js"></script>
 	<script src="js/services/contatosAPIService.js"></script>
 	<script src="js/services/operadorasAPIService.js"></script>
 	<script src="js/values/configValue.js"></script>
 	<script src="js/config/serialGeneratorConfig.js"></script>
+	<script src="js/config/routeConfig.js"></script>
 	<script src="js/filters/nameFilter.js"></script>
 	<script src="js/filters/ellipsisFilter.js"></script>
 	<script src="js/directives/uiAlertDirective.js"></script>
 	<script src="js/directives/uiDateDirective.js"></script>
 	<script src="js/directives/uiTelefoneDirective.js"></script>
+	<script src="js/interceptors/timestampInterceptor.js"></script>
+	<script src="js/interceptors/errorInterceptor.js"></script>
+	<script src="js/interceptors/loadingInterceptor.js"></script>
+	<script src="js/config/interceptorsConfig.js"></script>
 </head>
-<body ng-controller="listaTelefonicaCtrl">
-	<div class="jumbotron">
-		<h3>{{app}}</h3>
-		
-		<ui-accordions>
-			<ui-accordion title="Accordion 1">
-				Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. 
-			</ui-accordion>
-			<ui-accordion title="Accordion 2">
-				Lorem Ipsum é simplesmente uma simulação de texto da indústria tipográfica e de impressos, e vem sendo utilizado desde o século XVI, quando um impressor desconhecido pegou uma bandeja de tipos e os embaralhou para fazer um livro de modelos de tipos. 
-			</ui-accordion>
-		</ui-accordions>
-
-		<ui-alert title="Ops, aconteceu algo errado..." ng-show="error">
-			{{error}}
-		</ui-alert>
-
-		<input class="form-control" type="text" ng-model="criterioBusca">
-		<table ng-show="contatos.length > 0" class="table table-bordered">
-			<tr>
-				<th></th>
-				<th>Serial</th>
-				<th><a href="" ng-click="ordernarPor('nome')">Nome</a></th>
-				<th> <a href="" ng-click="ordernarPor('telefone')">Telefone</a></th>
-				<th>Operadora</th>
-				<th>Data</th>
-				<th></th>
-			</tr>
-			<tr ng-class="{'selecionado negrito': contato.done}" ng-repeat="contato in contatos | filter:{nome:criterioBusca} | 
-				orderBy:criterioOrdenacao:direcaoOrdenacao">
-				<td><input type="checkbox" ng-model="contato.done"/></td>
-				<td>{{contato.serial}}</td>
-				<td>
-					{{contato.nome | name | ellipsis}}
-				</td>
-				<td>
-					{{contato.telefone | limitTo:4}}
-				</td>
-				<td>
-					{{contato.operadora.nome | lowercase}}
-				</td>
-				<td>
-					{{contato.data | date: 'MMMM EEEE dd/MM/yyyy HH:mm'}}
-				</td>
-				<td>
-					<div style="width:20px; height:20px" ng-style="{'background-color':contato.cor}"></div>
-				</td>
-			</tr>
-		</table>
-		<hr>
-		<form name="contatoForm">
-			<input class="form-control" placeHolder="Nome" ng-model="contato.nome" name="nome" ng-required="true" ng-minlength="10"/>
-			<input class="form-control" placeHolder="Telefone" ng-model="contato.telefone" name="telefone" ng-required="true" ng-pattern="/^\d{4,5}-\d{4}$/" ui-telefone/>
-			<input class="form-control" type="text" name="data" placeholder="Data" ng-model="contato.data" ui-date/>
-			<select class="form-control" ng-model="contato.operadora" ng-options="operadora.nome + ' (' + ( operadora.preco | currency) + ')' group by operadora.categoria for operadora in operadoras | orderBy:'categoria'">
-				<option value="" selected="false">Selecione uma operadora</option>
-			</select>
-		</form>
-		<div ng-messages="contatoForm.nome.$error">
-			<div ng-message="required" ng-show="contatoForm.nome.$dirty" class="alet alert-danger">
-				Preencha o nome!
-			</div>
-			<div ng-message="minlength" class="alet alert-danger">
-				O campo nome deve ter no minimo 10 caracteres.
-			</div>
-		</div>
-			<div ng-show="contatoForm.telefone.$error.required && contatoForm.telefone.$dirty" class="alet alert-danger">
-				Preencha o telefone!
-			</div>
-			<div ng-show="contatoForm.telefone.$error.pattern" class="alet alert-danger">
-				O telefone deve ter o formato 9999-9999
-			</div>
-
-		<button class="btn btn-primary btn-block" ng-click="adicionarContato(contato)" ng-disabled="contatoForm.$invalid">Adicionar Contato</button>
-		<button class="btn btn-danger btn-block" ng-click="removerContato(contatos)" ng-disabled="!isContatoSelecionado(contatos)">Deletar Contato</button>
-		{{"100.69" | number:1}}
-		<div ng-include="'view/footer.html'"></div>
+<body>
+	{{loading}}
+	<div ng-show="loading">
+		<h3>Carregando, por favor aguarde...</h3>
 	</div>
+
+	<ng-view></ng-view>
+	<div ng-include="'view/footer.html'"></div>
 </body>
 </html>
