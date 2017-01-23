@@ -1,7 +1,7 @@
 # angular-contact-list
 This is a sample application created with basics directives AngularJS
 
-1. Install: npm intall
+1. Install: npm install
 
 2. Build: gulp prod or grunt prod
 
