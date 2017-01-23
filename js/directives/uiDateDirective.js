@@ -11,7 +11,7 @@ angular.module('listaTelefonica').directive('uiDate', function ($filter) {
 					date = date.substring(0, 5) + '/' + date.substring(5, 9);
 				}
 				return date;
-			}
+			};
 			//tratando eventos no link
 			element.bind('keyup', function () {
 				//utilizando o controller da diretiva ngModel pr trabalhar o dado dar o poder de reuso
@@ -27,12 +27,12 @@ angular.module('listaTelefonica').directive('uiDate', function ($filter) {
 			});
 
 			ctrl.$formatters.push(function(value) {
-				return $filter('date')(value, 'dd/MM/yyyy')
+				return $filter('date')(value, 'dd/MM/yyyy');
 			});
 		},
 		//fechando o scope
 		scope: {
 
 		}
-	}
+	};
 });

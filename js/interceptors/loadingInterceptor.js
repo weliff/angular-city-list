@@ -7,6 +7,7 @@ angular.module('listaTelefonica').factory('loadingInterceptor', function ($q, $r
 		},
 		requestError: function (rejection) {
 			$rootScope.loading = false;
+			console.log(rejection)
 			return $q.reject(rejection);
 		},
 			
@@ -22,6 +23,6 @@ angular.module('listaTelefonica').factory('loadingInterceptor', function ($q, $r
 			$rootScope.loading = false;
 			return $q.reject(rejection);
 		}
-	}
+	};
 
 });

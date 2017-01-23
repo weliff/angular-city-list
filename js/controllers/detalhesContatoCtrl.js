@@ -3,7 +3,7 @@ angular.module('listaTelefonica').controller("detalhesContatoCtrl", ['$scope', '
 	//$routeParams.id para pegar o param
 	
 	function (scope, contato) {
-		scope.contato = contato.data
+		scope.contato = contato.data;
 	}
 
 

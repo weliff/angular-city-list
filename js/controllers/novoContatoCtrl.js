@@ -10,7 +10,7 @@ angular.module('listaTelefonica').controller("novoContatoCtrl", ['$scope', 'cont
 		contatosAPI.save(contato).success(function(data) {
 			delete scope.contato;
 			scope.contatoForm.$setPristine();
-			location.path('/contatos')
+			location.path('/contatos');
 		});
 	};
 

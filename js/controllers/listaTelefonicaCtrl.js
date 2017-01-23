@@ -8,21 +8,21 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 	//];
 
 	var init = function () {
-		calcularImpostos(scope.contatos)
+		calcularImpostos(scope.contatos);
 		generateSerial(scope.contatos);
 
-	}
+	};
 
 	var calcularImpostos = function (contatos) {
 		contatos.forEach(function (contato) {
 			contato.operadora.precoComImposto = calcularImposto(contato.operadora.preco);
 		});
-	}
+	};
 
 	var calcularImposto = function (preco) {
 		var imposto = 1.2;
 		return preco * imposto;
-	}
+	};
 
 	scope.contatos = contatos.data;
 
@@ -30,7 +30,7 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 		contatos.forEach(function(contato) {
 			contato.serial = serialGenerator.generate();
 		});
-	}
+	};
 
 	scope.adicionarContato = function (contato) {
 		contato.data = new Date();
@@ -58,11 +58,11 @@ angular.module('listaTelefonica').controller("listaTelefonicaCtrl", ['$scope', '
 	scope.ordernarPor = function(campo) {
 		scope.criterioOrdenacao = campo;
 		scope.direcaoOrdenacao = !scope.direcaoOrdenacao;
-	}
+	};
 
 	scope.reset = function () {
 		scope.contatos = angular.copy(scope.contatos);
-	}
+	};
 
 	init();
 
